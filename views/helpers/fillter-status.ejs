@@ -1,0 +1,13 @@
+<% 
+fillterStatusHelper = (statusFillter,keywork) =>{
+    statusFillter.forEach((item)=>{
+        let link = systemConfig.prefixAdmin + '/tables/status/' + item.value
+        if(keywork !== '' && keywork !== undefined) link += '?keywork=' + keywork
+%>
+    <a class="btn m-b-sm btn-<%= item.class%> btn-sm" href="/<%= link %>" >
+        <%= item.name.toUpperCase()%> (<%= item.count%>)
+    </a>
+<%
+    })
+}
+%>
