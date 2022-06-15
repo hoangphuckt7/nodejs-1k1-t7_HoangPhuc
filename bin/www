@@ -27,7 +27,7 @@ var server = http.createServer(app);
  */
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/admin`);
+  console.log(`Server running at http://${hostname}:${port}`);
 });
 server.on("error", onError);
 server.on("listening", onListening);

@@ -9,6 +9,7 @@ const expressLayouts = require('express-ejs-layouts');
 const route = require('./routes')
 const db = require('./configs/db')
 
+
 const app = express();
 
 // view engine setup
@@ -23,7 +24,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(expressLayouts);
-
 // connect mongoDB
 db.connect()
 //ROUTES Init
@@ -44,5 +44,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error',{ pageTitle: 'ErrorPage' });
 });
-
+// Object
+// notifier.notify({
+//   title: 'My notification',
+//   message: 'Hello, there!'
+// });
 module.exports = app;
