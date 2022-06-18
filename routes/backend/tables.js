@@ -1,12 +1,17 @@
 var express = require("express");
 var router = express.Router();
+const util = require('util');
+
 const Items = require("../../configs/models/Items");
 const paramHelper = require("../../helpers/param");
 const UtilsHelpers = require("../../helpers/utils");
 // const ValidateTables = require("../../validates/tables");
 const systemConfig = require('../../configs/system')
+const notifyConfig = require('../../configs/notify')
+
 const notifier = require('node-notifier');
 const { body, validationResult } = require("express-validator");
+
 //  GET dashboard page.
 router.get("(/status/:status)?", (req, res, next) => {
 	let objWhere = {};
@@ -17,10 +22,10 @@ router.get("(/status/:status)?", (req, res, next) => {
 
 	if (currentStatus === "all") {
 		if (keywork !== "") objWhere = { name: new RegExp(keywork, "i") };
+		
 	} else {
 		objWhere = { status: currentStatus, name: new RegExp(keywork, "i") };
 	}
-
 	Items.find(objWhere)
 		.then((items) => {
 			res.render("pages/tables/index", {
@@ -29,6 +34,7 @@ router.get("(/status/:status)?", (req, res, next) => {
 				statusFilter,
 				currentStatus,
 				keywork,
+				objWhere
 			});
 		})
 		.catch(next);
@@ -41,25 +47,41 @@ router.get("/change-status/:id/:status", (req, res, next) => {
 	let id = paramHelper.getParam(req.params, "id", "");
 
 	let status = currentStatus === "active" ? "inactive" : "active";
-	Items.updateOne({ _id: id }, { status: status }, (err, resulf) => {
-		notifier.notify({
-			title: 'success',
-			message: 'change satus success!',
-		});
-		res.redirect(`/${systemConfig.prefixAdmin}/tables`);
-	});
+	Items.updateOne({ _id: id }, { status: status })
+		.then(() => {
+			notifier.notify({
+				title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE,
+				message: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_MESSAGE,
+			});
+			res.redirect(`/${systemConfig.prefixAdmin}/tables`);
+		})
+		.catch(err =>{
+			notifier.notify({
+				title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE_FAIL,
+				message: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_MESSAGE_FAIL,
+			});
+			console.log(err);
+		})
 });
 
 // Change status - Multi
 router.post("/change-status/:status", (req, res, next) => {
 	let currentStatus = paramHelper.getParam(req.params, "status", "active");
-	Items.updateMany({ _id: { $in: req.body.cid } }, { status: currentStatus }, (err, resulf) => {
-		notifier.notify({
-			title: 'success',
-			message: `change ${resulf.modifiedCount} satus success!`,
-		});
-		res.redirect(`/${systemConfig.prefixAdmin}/tables`);
-	})
+	Items.updateMany({ _id: { $in: req.body.cid } }, { status: currentStatus })
+		.then(()=>{
+			notifier.notify({
+				title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE,
+				message: util.format(notifyConfig.change_status.NOTIFY_CHANGE_STATUS_MULTI_MESSAGE_SUCCESS, resulf.modifiedCount),
+			});
+			res.redirect(`/${systemConfig.prefixAdmin}/tables`);
+		})
+		.catch(err=>{
+			notifier.notify({
+				title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE,
+				message: util.format(notifyConfig.change_status.NOTIFY_CHANGE_STATUS_MULTI_MESSAGE_FAIL, resulf.modifiedCount),
+			});
+			console.log(err);
+		})
 });
 
 // delete status
@@ -94,13 +116,13 @@ router.post("/change-ordering", (req, res, next) => {
 });
 
 // Page Edit - Add item
-router.get(("/form(/:id)?"), (req, res, next) => {
+router.get(("/form(/:slug)?"), (req, res, next) => {
 
-	let id = paramHelper.getParam(req.params, "id", "");
+	let slug = paramHelper.getParam(req.params, "slug", "");
 	let itemDefault = { name: '', ordering: 0, status: 'Choose Status' }
 	let errors = null
-	if (id !== '') {
-		Items.findById(id)
+	if (slug !== '') {
+		Items.findOne(slug)
 			.then(item => {
 				const nameItems = item.name
 				pageTitle = 'Edit ' + nameItems
@@ -125,18 +147,19 @@ router.get(("/form(/:id)?"), (req, res, next) => {
 
 // Add item
 router.post("/submit", 
-	ValidateTables.validator(body),
-	// body('name','name không phù hợp').isLength({min:5}),
-    // body('ordering','lơn hơn 0').isInt({gt:0, sl:100}),//gt: greater, sl: smaller
-    // body('status','không được rỗng').custom((value) =>{
-    //     return value !== 'novalue'
-	// }),
+	// ValidateTables.validator(body),
+	body('name','name không phù hợp').isLength({min:5}),
+    body('ordering','lơn hơn 0').isInt({gt:0, sl:100}),//gt: greater, sl: smaller
+    body('slug','bắt buộc'),
+    body('status','không được rỗng').custom((value) =>{
+        return value !== 'novalue'
+	}),
 	(req, res, next) => {
 		const formData = {...req.body}
 		const item = new Items(formData);
 		console.log(item);
 		const errors = validationResult(req).errors;
-		console.log(errors);
+		console.log(errors.error);
 		if(typeof(item) !== 'undefined' && item.id !== ''){
 			if(errors){
 				const nameItems = item.name
