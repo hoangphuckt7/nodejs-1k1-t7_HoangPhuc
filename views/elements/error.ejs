@@ -3,13 +3,11 @@
         <div class="col-lg-6">
             <div class="alert alert-danger" role="alert">
                 <ul>
-                    <% errors.forEach((item, index) =>{ %>
+                    <% errors.errors.forEach((item, index) =>{ %>
                         <li><%- item.msg%></li>
                     <% }) %>
                 </ul>
             </div>
         </div>
     </div>
-<% } else {%>
-    <div></div>
-<% } %>
+<% }%>

@@ -1,7 +1,6 @@
 $(document).ready(function () {
     var ckbAll = $(".cbAll");
     var fmAdmin = $("#zt-form");
-console.log('ok');
     // CKEDITOR
     if ($('textarea#content_ck').length) {
         CKEDITOR.replace('content_ck');

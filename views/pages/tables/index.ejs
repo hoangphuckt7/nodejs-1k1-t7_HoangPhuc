@@ -49,7 +49,7 @@
                     value="<%= keywork%>"
                   />
                   <span class="input-group-btn">
-                    <button class="btn btn-info" type="submit">Search</button>
+                    <button class="btn btn-info ml-3 mr-3" type="submit">Search</button>
                   </span>
                   <span class="input-group-btn">
                     <button class="btn btn-success" type="button">
@@ -99,7 +99,7 @@
                   index)=>{ %>
                   <tr>
                     <td>
-                      <input type="checkbox" name="cid" value="<%= item.id%>" />
+                      <input type="checkbox" name="cid" value="<%= item.id%>"/>
                     </td>
                     <td><%= index + 1 %></td>
                     <td><%- item.name.replace(objWhere.name, `<mark>${keywork}</mark>`)%></td>
