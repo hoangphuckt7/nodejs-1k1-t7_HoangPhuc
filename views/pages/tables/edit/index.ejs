@@ -9,11 +9,11 @@
                         <form role="form" action="<%= systemConfig.prefixAdmin %>/tables/submit" method="POST">
                             <div class="form-group">
                                 <label>Name</label>
-                                <input class="form-control" name="name" value="<%- item.name%>" />
+                                <input class="form-control" name="name" value="<%- item.name%>"/>
                             </div>
                             <div class="form-group">
                                 <label>Ordering</label>
-                                <input class="form-control" type="number" name="ordering" value="<%- item.ordering%>" />
+                                <input class="form-control" type="number" name="ordering" value="<%- item.ordering%>"/>
                             </div>
                             <div class="form-group">
                                 <label>Slug</label>
@@ -37,3 +37,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    const nameInput = document.querySelector('input[name="name"]')
+    const slugInput = document.querySelector('input[name="slug"]')
+    nameInput.addEventListener('keyup',(e)=>{
+        value = e.target.value
+        newValue = value.replace(/ /g,'-')
+        slugInput.value = newValue
+    })
+</script>

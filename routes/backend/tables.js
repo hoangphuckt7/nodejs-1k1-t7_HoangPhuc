@@ -5,7 +5,7 @@ const util = require("util");
 const Items = require("../../configs/models/Items");
 const paramHelper = require("../../helpers/param");
 const UtilsHelpers = require("../../helpers/utils");
-const ValidateTables = require("../../validates/tables");
+// const ValidateTables = require("../../validates/tables");
 const systemConfig = require("../../configs/system");
 const notifyConfig = require("../../configs/notify");
 
@@ -156,12 +156,12 @@ router.get("/form(/:slug)?", (req, res, next) => {
 // Add - Edit item
 router.post(
   "/submit",
-  ValidateTables.validator(body),
-  // body("name", "name không phù hợp").isLength({ min: 5 }),
-  // body("ordering", "lớn hơn 0").isInt({ gt: 0, sl: 100 }), //gt: greater, sl: smaller
-  // check("status", "không được rỗng").custom((value) => {
-  //   return value !== "novalue";
-  // }),
+  // ValidateTables.validator(body),
+  body("name", "name không phù hợp").isLength({ min: 5 }),
+  body("ordering", "lớn hơn 0").isInt({ gt: 0, sl: 100 }), //gt: greater, sl: smaller
+  check("status", "không được rỗng").custom((value) => {
+    return value !== "novalue";
+  }),
   (req, res, next) => {
     const formData = { ...req.body };
     const errors = validationResult(req);
