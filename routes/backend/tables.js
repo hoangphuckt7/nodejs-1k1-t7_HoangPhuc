@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const util = require("util");
+const fs = require("fs");
 
 const Items = require("../../configs/models/Items");
 const paramHelper = require("../../helpers/param");
@@ -10,7 +11,20 @@ const systemConfig = require("../../configs/system");
 const notifyConfig = require("../../configs/notify");
 
 const notifier = require("node-notifier");
+const randomstring = require("randomstring");
+const path = require("path")
 const { body, validationResult, check } = require("express-validator");
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/img')
+  },
+  filename: function (req, file, cb) {
+    cb(null, randomstring.generate({length: 12, charset: 'alphabetic'}) + path.extname(file.originalname))
+  }
+})
+const upload = multer({ storage: storage, limits:{fileSize: 1 * 1024 * 1024} })
 
 //  GET dashboard page.
 router.get("(/status/:status)?", (req, res, next) => {
@@ -44,7 +58,16 @@ router.get("/change-status/:id/:status", (req, res, next) => {
   let id = paramHelper.getParam(req.params, "id", "");
 
   let status = currentStatus === "active" ? "inactive" : "active";
-  Items.updateOne({ _id: id }, { status: status })
+
+  let data = {
+    status: status,
+    modified: {
+        user_id: 0,
+        user_name: 'admin',
+        time: Date.now()
+      }
+  }
+  Items.updateOne({ _id: id }, data)
     .then(() => {
       notifier.notify({
         title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE,
@@ -57,7 +80,6 @@ router.get("/change-status/:id/:status", (req, res, next) => {
         title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE_FAIL,
         message: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_MESSAGE_FAIL,
       });
-      console.log(err);
     });
 });
 
@@ -65,7 +87,8 @@ router.get("/change-status/:id/:status", (req, res, next) => {
 router.post("/change-status/:status", (req, res, next) => {
   let currentStatus = paramHelper.getParam(req.params, "status", "active");
   Items.updateMany({ _id: { $in: req.body.cid } }, { status: currentStatus })
-    .then(() => {
+    .then((resulf) => {
+      res.redirect(`/${systemConfig.prefixAdmin}/tables`);
       notifier.notify({
         title: notifyConfig.change_status.NOTIFY_CHANGE_STATUS_TITLE,
         message: util.format(
@@ -73,7 +96,6 @@ router.post("/change-status/:status", (req, res, next) => {
           resulf.modifiedCount
         ),
       });
-      res.redirect(`/${systemConfig.prefixAdmin}/tables`);
     })
     .catch((err) => {
       notifier.notify({
@@ -83,21 +105,27 @@ router.post("/change-status/:status", (req, res, next) => {
           resulf.modifiedCount
         ),
       });
-      console.log(err);
     });
 });
 
 // delete status
-router.get("/delete/:id", (req, res, next) => {
+router.get("/delete/:id", async (req, res, next) => {
   let id = paramHelper.getParam(req.params, "id", "");
-  Items.deleteOne({ _id: id }, (err, resulf) => {
-    res.redirect(`/${systemConfig.prefixAdmin}/tables`);
-  });
+  console.log(id);
+  await Items.findOne({_id:id},(req, res, next))
+      .then(item =>
+        //  fs.unlink('uploads/img/' + item.avatar)
+        console.log('uploads/img/' + item.avatar)
+         )
+      .catch(next)
+  // Items.deleteOne({ _id: id }, (err, resulf) => {
+    
+  //   res.redirect(`/${systemConfig.prefixAdmin}/tables`);
+  // });
 });
 
 // delete status - Multi
 router.post("/delete", (req, res, next) => {
-  console.log(req.body.cid);
   Items.deleteMany({ _id: req.body.cid }, (err, resulf) => {
     res.redirect(`/${systemConfig.prefixAdmin}/tables`);
   });
@@ -157,16 +185,19 @@ router.get("/form(/:slug)?", (req, res, next) => {
 router.post(
   "/submit",
   // ValidateTables.validator(body),
-  body("name", "name không phù hợp").isLength({ min: 5 }),
-  body("ordering", "lớn hơn 0").isInt({ gt: 0, sl: 100 }), //gt: greater, sl: smaller
-  check("status", "không được rỗng").custom((value) => {
-    return value !== "novalue";
-  }),
+//   body("name", "name không phù hợp").isLength({ min: 5 }),
+//   body("content", "content không được rỗng").isLength({ min: 5 }),
+//   body("ordering", "lớn hơn 0").isInt({ gt: 0, sl: 100 }), //gt: greater, sl: smaller
+//   check("status", "không được rỗng").custom((value) => {
+//     return value !== "novalue";
+//   }),
+  upload.single('avatar'),
   (req, res, next) => {
     const formData = { ...req.body };
     const errors = validationResult(req);
     if (typeof formData !== "undefined" && formData.id !== "") {
       const item = formData;
+      item.avatar = req.file.filename
       if (!errors.isEmpty()) {
         const nameItems = item.name;
         pageTitle = "Edit " + nameItems;
@@ -189,7 +220,8 @@ router.post(
           .catch((err) => req.send(err));
       }
     } else {
-      const item = new Items(formData);
+        const item = new Items(formData);
+        item.avatar = req.file.filename
       if (!errors.isEmpty()) {
         pageTitle = "Add";
         res.render("pages/tables/edit", {
@@ -198,6 +230,11 @@ router.post(
           errors,
         });
       } else {
+        item.created = {
+            user_id: 0,
+            user_name: 'admin',
+            time: Date.now()
+        },
         item
           .save()
           .then(() => {

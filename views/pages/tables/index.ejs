@@ -1,3 +1,4 @@
+<% const folderUploads = 'img/' %> 
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -88,6 +89,7 @@
                       <input type="checkbox" class="cbAll" />
                     </th>
                     <th>#</th>
+                    <th>Avatar</th>
                     <th>Name</th>
                     <th>Status</th>
                     <th>Ordering</th>
@@ -102,6 +104,9 @@
                       <input type="checkbox" name="cid" value="<%= item.id%>"/>
                     </td>
                     <td><%= index + 1 %></td>
+                    <td>
+                        <img src="<%- folderUploads + item.avatar %>" width="50px">
+                    </td>
                     <td><%- item.name.replace(objWhere.name, `<mark>${keywork}</mark>`)%></td>
                     <td><%- statusHelper("tables",item.status, item.id) %></td>
                     <td>

@@ -2,9 +2,11 @@ $(document).ready(function () {
     var ckbAll = $(".cbAll");
     var fmAdmin = $("#zt-form");
     // CKEDITOR
-    if ($('textarea#content_ck').length) {
-        CKEDITOR.replace('content_ck');
-    }
+    CKEDITOR.replace( 'editor1', {
+        uiColor: '#CCEAEE',
+        removeButtons: 'Underline,JustifyCenter',
+        removePlugins: [ 'Heading', 'Link', 'CKFinder' ],
+    } );
 
     //call active menu
     activeMenu();
@@ -124,4 +126,5 @@ $(document).ready(function () {
             $(this).parent().css({'display':'none'});
         })    
     }
+    
 });

@@ -4,7 +4,8 @@ const notifyConfig = require('../configs/notify')
 const options = {
     name: { min: 5, max: 10},
     ordering : { min: 0, max: 100},
-    status : { value: 'novalue'}
+    status : { value: 'novalue'},
+    content : {min: 5, max: 200 }
 }
 module.exports = {
     validator:(body, check) => {
@@ -18,7 +19,10 @@ module.exports = {
 
             // Status
             check('status', notifyConfig.validate_form.NOTIFY_VALIDATE_STATUS).custom((value) =>{
-                return value !== options.status.value
-	    })
+                return value !== options.status.value }),
+
+            // Content
+            body('content',util.format(notifyConfig.validate_form.NOTIFY_VALIDATE_CONTENT, options.content.min, options.content.max))
+                .isLength({min:options.content.min, max: options.content.max})
     }
 }

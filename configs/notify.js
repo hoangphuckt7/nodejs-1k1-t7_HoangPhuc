@@ -10,6 +10,7 @@ module.exports = {
     validate_form:{
         NOTIFY_VALIDATE_NAME: 'name từ %d đến %d',
         NOTIFY_VALIDATE_ORDERING: 'ordering phải lớn hơn %d và bé hơn %d',
-        NOTIFY_VALIDATE_STATUS: 'status không được trống!'
+        NOTIFY_VALIDATE_STATUS: 'status không được trống!',
+        NOTIFY_VALIDATE_CONTENT: 'content không được trống!'
     }
 }
