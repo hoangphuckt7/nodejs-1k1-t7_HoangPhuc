@@ -1,0 +1,185 @@
+<% const folderUploads = 'img/' %> 
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <p class="mb-4">
+    DataTables is a third party plugin that is used to generate the demo table
+    below. For more information about DataTables, please visit the
+    <a target="_blank" href="https://datatables.net"
+      >official DataTables documentation</a
+    >.
+  </p>
+
+  <!-- DataTales Example -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Search & Filter
+          <a href="<%= systemConfig.prefixAdmin %>/tables/status/all">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              style="width: 15px"
+              viewBox="0 0 512 512"
+            >
+              <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+              <path
+                d="M464 16c-17.67 0-32 14.31-32 32v74.09C392.1 66.52 327.4 32 256 32C161.5 32 78.59 92.34 49.58 182.2c-5.438 16.81 3.797 34.88 20.61 40.28c16.89 5.5 34.88-3.812 40.3-20.59C130.9 138.5 189.4 96 256 96c50.5 0 96.26 24.55 124.4 64H336c-17.67 0-32 14.31-32 32s14.33 32 32 32h128c17.67 0 32-14.31 32-32V48C496 30.31 481.7 16 464 16zM441.8 289.6c-16.92-5.438-34.88 3.812-40.3 20.59C381.1 373.5 322.6 416 256 416c-50.5 0-96.25-24.55-124.4-64H176c17.67 0 32-14.31 32-32s-14.33-32-32-32h-128c-17.67 0-32 14.31-32 32v144c0 17.69 14.33 32 32 32s32-14.31 32-32v-74.09C119.9 445.5 184.6 480 255.1 480c94.45 0 177.4-60.34 206.4-150.2C467.9 313 458.6 294.1 441.8 289.6z"
+              />
+            </svg>
+          </a>
+        </div>
+
+        <div class="panel-body">
+          <div class="row">
+            <div class="status-list col-sm-6 pl0">
+              <% include ./../../helpers/fillter-status %> <%
+              fillterStatusHelper(statusFilter, keywork) %>
+            </div>
+            <div class="col-sm-6">
+              <form
+                action="<%= systemConfig.prefixAdmin %>/tables/status/<%= currentStatus%>"
+                method="GET"
+              >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="keywork"
+                    placeholder="Search for..."
+                    value="<%= keywork%>"
+                  />
+                  <span class="input-group-btn">
+                    <button class="btn btn-info ml-3 mr-3" type="submit">Search</button>
+                  </span>
+                  <span class="input-group-btn">
+                    <button class="btn btn-success" type="button">
+                      <a
+                        href="<%= systemConfig.prefixAdmin %>/tables/status/<%= currentStatus%>"
+                        >Clear</a
+                      >
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="panel panel-info">
+        <div class="panel-heading">List Items</div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+          <form
+            role="form"
+            class="form-inline zt-form"
+            id="zt-form"
+            action=""
+            method="post"
+          >
+            <% include ./../../helpers/action %> <%- actionHelper() %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" class="cbAll" />
+                    </th>
+                    <th>#</th>
+                    <th>Avatar</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Ordering</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% include ./../../helpers/status %> <% items.forEach((item,
+                  index)=>{ %>
+                  <tr>
+                    <td>
+                      <input type="checkbox" name="cid" value="<%= item.id%>"/>
+                    </td>
+                    <td><%= index + 1 %></td>
+                    <td>
+                        <div style="width:35px; height:35px">
+                          <img src="<%- item.avatar ? folderUploads + item.avatar  : 'backend/img/undraw_profile.svg' %>" width="100%" height="100%">
+                        </div>
+                    </td>
+                    <td><%- item.name.replace(objWhere.name, `<mark>${keywork}</mark>`)%></td>
+                    <td><%- statusHelper("tables",item.status, item.id) %></td>
+                    <td>
+                      <input
+                        type="number"
+                        value="<%= item.ordering %>"
+                        class="text-center ordering"
+                      />
+                    </td>
+                    <td>
+                      <a
+                        href="<%= systemConfig.prefixAdmin %>/tables/form/<%= item.slug%>"
+                        type="button"
+                        class="btn btn-warning btn-sm"
+                        >Edit</a
+                      >
+                      <a
+                        href="<%= systemConfig.prefixAdmin %>/tables/delete/<%= item.id%>"
+                        type="button"
+                        class="btn btn-danger btn-sm btn-delete"
+                        >Delete</a
+                      >
+                    </td>
+                  </tr>
+                  <%})%>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="panel panel-info" id="pagination">
+        <div class="panel-heading">
+          Pagination
+          <span>^</span>
+          <span class="label label-warning">Total pages: 0</span>
+          <span class="label label-danger">Total entries: 0</span>
+        </div>
+
+        <div class="panel-body">
+          <div class="infor-pagination">
+            <p>Number of elements on the page: <span>0</span></p>
+
+            <p>
+              Showing <span> 0 </span> to <span>0</span> of
+              <span>0</span> entries
+            </p>
+          </div>
+          <div class="ad-pagination">
+            <ul class="pagination text-center">
+              <li class="disabled"><a>«</a></li>
+
+              <li><a href="admin123/item/page=1">1</a></li>
+
+              <li class="active"><a>2</a></li>
+
+              <li><a href="admin123/item/page=3">3</a></li>
+
+              <li><a href="admin123/item/page=4">4</a></li>
+
+              <li><a href="admin123/item/page=5">5</a></li>
+
+              <li><a href="admin123/item/page=0">»</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.container-fluid -->

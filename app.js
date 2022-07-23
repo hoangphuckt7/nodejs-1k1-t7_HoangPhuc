@@ -6,14 +6,15 @@ const logger = require('morgan');
 
 const expressLayouts = require('express-ejs-layouts');
 
-const route = require('./routes')
-const db = require('./configs/db')
+const route = require('./mapp/routes')
+const db = require('./mapp/configs/db')
 
 
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'mapp/views/admin'));
+// app.set('views', path.join(__dirname, 'mapp/views/blog'));
 app.set('view engine', 'ejs');
 app.set('layout', 'index');
 
