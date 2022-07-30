@@ -111,23 +111,19 @@ router.post("/change-status/:status", (req, res, next) => {
 // delete status
 router.get("/delete/:id", async (req, res, next) => {
   let id = paramHelper.getParam(req.params, "id", "");
-  console.log(id);
-  await Items.findOne({_id:id},(req, res, next))
-      .then(item =>
-        //  fs.unlink('uploads/img/' + item.avatar)
-        console.log('uploads/img/' + item.avatar)
-         )
-      .catch(next)
-  // Items.deleteOne({ _id: id }, (err, resulf) => {
+  let item = await Items.findOne({ _id : id })
+  console.log('object :>> ', 'uploads/img/' + item.avatar);
+  fs.unlink('uploads/img/' + item.avatar, (err) => {if(err) {throw err;}});
+  await Items.deleteOne({ _id: id }, (err, resulf) => {
     
-  //   res.redirect(`/${systemConfig.prefixAdmin}/tables`);
-  // });
+    res.redirect(`/${systemConfig.prefixAdmin}/tables`);
+  });
 });
 
 // delete status - Multi
 router.post("/delete", (req, res, next) => {
   Items.deleteMany({ _id: req.body.cid }, (err, resulf) => {
-    res.redirect(`/${systemConfig.prefixAdmin}/tables`);
+    res.redirect(`/${systesmConfig.prefixAdmin}/tables`);
   });
 });
 

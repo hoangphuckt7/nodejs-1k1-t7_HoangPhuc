@@ -1,4 +1,4 @@
 module.exports = {
     prefixAdmin : 'admin',
-    prefixBlog : 'blog'
+    prefixShop : 'shop'
 }
