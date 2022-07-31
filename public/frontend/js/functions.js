@@ -1320,7 +1320,7 @@ window.scwEvents = window.scwEvents || {};
 			SEMICOLON.widget.animations();
 			SEMICOLON.widget.hoverAnimation();
 			SEMICOLON.widget.youtubeBgVideo();
-			SEMICOLON.widget.tabs();
+			// SEMICOLON.widget.tabs();
 			SEMICOLON.widget.toggles();
 			SEMICOLON.widget.accordions();
 			SEMICOLON.widget.counter();
@@ -1468,20 +1468,20 @@ window.scwEvents = window.scwEvents || {};
 			SEMICOLON.initialize.functions( settings );
 		},
 
-		tabs: function( element ){
-			let settings = {
-				element: element,
-				default: '.tabs,[data-plugin="tabs"]',
-				file: 'plugins.tabs.js',
-				error: 'plugins.tabs.js: Plugin could not be loaded',
-				execfn: 'SEMICOLON_tabsInit',
-				pluginfn: () => $().tabs,
-				trigger: 'pluginTabsReady',
-				class: 'has-plugin-tabs'
-			};
+		// tabs: function( element ){
+		// 	let settings = {
+		// 		element: element,
+		// 		default: '.tabs,[data-plugin="tabs"]',
+		// 		file: 'plugins.tabs.js',
+		// 		error: 'plugins.tabs.js: Plugin could not be loaded',
+		// 		execfn: 'SEMICOLON_tabsInit',
+		// 		pluginfn: () => $().tabs,
+		// 		trigger: 'pluginTabsReady',
+		// 		class: 'has-plugin-tabs'
+		// 	};
 
-			SEMICOLON.initialize.functions( settings );
-		},
+		// 	SEMICOLON.initialize.functions( settings );
+		// },
 
 		toggles: function( element ){
 			let settings = {

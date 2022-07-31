@@ -3,10 +3,10 @@ const router = express.Router();
 
 const dashboardRouter = require("./dashboard");
 const tablesRouter = require("./tables");
-const authRouter = require("./auth");
+const footerRouter = require("./footer");
 
 router.use("", dashboardRouter);
 router.use("/tables", tablesRouter);
-router.use("/auth", authRouter);
+router.use("/footer", footerRouter);
 
 module.exports = router;
