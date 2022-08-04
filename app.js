@@ -13,8 +13,8 @@ const db = require('./mapp/configs/db')
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'mapp/views/shop_frontend'));
-// app.set('views', path.join(__dirname, 'mapp/views/admin'));
+// app.set('views', path.join(__dirname, 'mapp/views/shop_frontend'));
+app.set('views', path.join(__dirname, 'mapp/views/admin'));
 app.set('view engine', 'ejs');
 app.set('layout', 'index');
 

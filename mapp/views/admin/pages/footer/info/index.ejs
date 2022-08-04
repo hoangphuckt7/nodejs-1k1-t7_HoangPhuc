@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form  role="form" action="<%= systemConfig.prefixAdmin %>/footer/submit" method="POST">
+                    <div class="form-group row">
+                        <div class="row col-sm-5">
+                            <label for="inputPhone" class="col-sm-12 col-form-label">Phone:</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" name="phone"/>
+                            </div>
+                        </div>
+                        <div class="row col-sm-5">
+                            <label for="inputFax" class="col-sm-12 col-form-label">Fax:</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" name="fax"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="row col-sm-5">
+                            <label for="inputEmail" class="col-sm-12 col-form-label">Email:</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" name="email"/>
+                            </div>
+                        </div>
+                        <div class="row col-sm-5">
+                            <label for="inputHeadquarters" class="col-sm-12 col-form-label">Headquarters:</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" rows="2" cols="50" name="headquarters"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="row col-sm-5">
+                            <label for="inputSlogan" class="col-sm-12 col-form-label">Slogan:</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" rows="2" cols="50" name="slogan"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
