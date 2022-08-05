@@ -10,7 +10,7 @@ router.get('/info', function (req, res, next) {
 
 router.post('/submit', function (req, res, next) {
     const formData = { ...req.body };
-    const data = new Footer.footerSchema(formData)
+    const data = new Footer(formData)
     data
         .save()
         .then(() => {
