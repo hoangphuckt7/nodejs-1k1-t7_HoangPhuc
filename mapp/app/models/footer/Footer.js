@@ -18,15 +18,4 @@ const footerSchema = new Schema(
 )
 
 
-// const RencentPostsSchema = new Schema(
-//   {
-//     postName: { type: String },
-//     time: { type: Number },
-//     url: { type: Number },
-//     slug: { type: String, slug: 'postName', unique: true },
-//   }
-// )
-
-
 module.exports = mongoose.model("footer", footerSchema);
-// module.exports = mongoose.model("post_name", RencentPostsSchema);
