@@ -1,4 +1,4 @@
-const Items = require('../configs/models/Items')
+const Items = require('../app/models/tables/Items')
 
 const createFillerStatus = (currentStatus) => {
 
