@@ -55,7 +55,6 @@ class FooterController {
     recentPostUpdate(req, res, next) {
         const formData = { ...req.body };
         const data = new recentPost(formData)
-        console.log(data);
         data
             .save()
             .then(() => {
