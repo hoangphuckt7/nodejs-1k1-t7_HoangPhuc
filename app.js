@@ -8,7 +8,8 @@ const expressLayouts = require('express-ejs-layouts');
 
 const route = require('./mapp/routes')
 const db = require('./mapp/configs/db')
-
+global.__base = __dirname + "/";
+global.frontend = global.__base + "mapp/views/shop_frontend"
 
 const app = express();
 

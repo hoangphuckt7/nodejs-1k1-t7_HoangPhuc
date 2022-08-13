@@ -4,7 +4,7 @@
         <!-- /.panel-heading -->
         <div class="panel-body">
             <div class="pull-left">
-                <a href="admin/footer/renent_posts/edit" class="btn btn-warning btn-addNew"
+                <a href="<%= systemConfig.prefixAdmin %>/footer/renent_posts/create" class="btn btn-warning btn-addNew"
                   >Add New
                 </a>
               </div>
@@ -20,24 +20,27 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <% item.forEach((item, index)=>{ %>
                         <tr>
                             <td>
-                                aaa
+                                <%= index + 1 %> 
                             </td>
                             <td>
-                                aaa
+                                <%= item.postName %> 
                             </td>
                             <td>
-                                abc
+                                <%= item.postTime %> 
                             </td>
                             <td>
-                                abv
+                                <a href="<%= item.postUrl %>"> Link </a> 
                             </td>
+                            <input class="form-control" name="id" value="<%- item.id%>" type="hidden" />
                             <td>
-                                <a href="#" type="button" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="#" type="button" class="btn btn-danger btn-sm btn-delete">Delete</a>
+                                <a href="<%= systemConfig.prefixAdmin %>/footer/renent_posts/create/<%- item.id%>" type="button" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<%= systemConfig.prefixAdmin %>/footer/renent_posts/delete/<%- item.id%>" type="button" class="btn btn-danger btn-sm btn-delete">Delete</a>
                             </td>
                         </tr>
+                        <% }) %>
                     </tbody>
                 </table>
             </div>

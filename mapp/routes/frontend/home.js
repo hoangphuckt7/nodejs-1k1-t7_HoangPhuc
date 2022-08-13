@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const homeController = require("../../app/controllers/frontend/HomeController")
 
-/* GET blog page. */
-router.get('/', function(req, res, next) {
-  res.render('pages/home/index', { pageTitle: 'Shop' });
-});
-
+router.get('/', homeController.show)
 
 module.exports = router;

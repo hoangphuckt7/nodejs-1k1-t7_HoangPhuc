@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
+// var express = require('express');
+// var router = express.Router();
+const paramHelper = require("../../helpers/param");
 
-const Footer = require("../models/footer/Footer");
-const recentPost = require("..//models/footer/Rencent_post");
+const FooterModule = require("../models/footer/Footer");
+const recentPostModule = require("../models/footer/Rencent_post");
 
 const notifier = require("node-notifier");
 
@@ -16,7 +17,7 @@ class FooterController {
     //[POST] /submit
     footerLeft(req, res, next) {
         const formData = { ...req.body };
-        const data = new Footer(formData)
+        const data = new FooterModule(formData)
         data
             .save()
             .then(() => {
@@ -31,40 +32,62 @@ class FooterController {
 
     //[GET] /renent_posts
     recentPost(req, res, next) {
-        res.render('pages/footer/recent_posts/index', { pageTitle: 'Edit Recent Post Footer' });
+        recentPostModule.find()
+            .then((item) => {
+                res.render('pages/footer/recent_posts/index', { 
+                    pageTitle: 'List Recent Post Footer' ,
+                    item
+                });
+            })
+            .catch(next)
     }
 
-    //[GET] /renent_posts/edit(/:id)?
-    recentPostEdit(req, res, next) {
+    //[GET] /renent_posts/create(/:id)?
+    recentPostCreate(req, res, next) {
+        var id = paramHelper.getParam(req.params, "id", "");
+        let itemDefault = { postName: "", postTime: "", postUrl: "" };
         if(id){
-            recentPost.findOne({_id})
-            .then((item) => {
-                const nameItems = item.name;
-                pageTitle = "Edit " + nameItems;
-                res.render("pages/tables/edit/index", {
-                    pageTitle: pageTitle,
-                    item,
-                    errors,
-                });
+            recentPostModule.findById({_id: id})
+                .then((item)=>{
+                    res.render("pages/footer/recent_posts/edit/index", {
+                        pageTitle : "Edit Item",
+                        item
+                    })
+
                 })
-                .catch(next);
+        }else {
+            res.render("pages/footer/recent_posts/edit/index", {
+                pageTitle : "Add Item",
+                item: itemDefault
+            })
         }
     }
 
-    //[POST] /renent_posts/edit/submit
-    recentPostUpdate(req, res, next) {
+    //[POST] /renent_posts/store
+    recentPostStore(req, res, next) {
+        var id = paramHelper.getParam(req.params, "id", "");
         const formData = { ...req.body };
-        const data = new recentPost(formData)
-        data
-            .save()
-            .then(() => {
-                notifier.notify({
-                    title: "success",
-                    message: "Update item success!",
+        if(id){
+            recentPostModule.updateOne({_id: id}, formData)
+            .then(()=>res.redirect("/admin/footer/renent_posts"))
+            .catch(next)
+        }else{
+            const data = new recentPostModule(formData)
+            data
+                .save()
+                .then(()=>{
+                    res.redirect("/admin/footer/renent_posts")
                 })
-                res.redirect("/admin/footer")
-            })
-            .catch((error) => console.log(error));
+                .catch((error) => console.log(error));
+        }
+    }
+
+    //[DELETE] /renent_posts/delete/:id
+    recentPostDelete(req, res, next) {
+        var id = paramHelper.getParam(req.params, "id", "");
+        recentPostModule.deleteOne({_id: id})
+            .then(()=>res.redirect("/admin/footer/renent_posts"))
+            .catch(next)
     }
 }
 module.exports = new FooterController();

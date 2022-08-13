@@ -100,7 +100,6 @@ class Tables {
     async deleteStatus(req, res, next) {
         let id = paramHelper.getParam(req.params, "id", "");
         let item = await Items.findOne({ _id : id })
-        console.log('object :>> ', 'uploads/img/' + item.avatar);
         fs.unlink('uploads/img/' + item.avatar, (err) => {if(err) {throw err;}});
         await Items.deleteOne({ _id: id }, (err, resulf) => {
             
